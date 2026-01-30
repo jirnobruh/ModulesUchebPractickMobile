@@ -73,12 +73,7 @@ fun CollegeScheduleApp() {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             when (currentDestination) {
                 AppDestinations.HOME -> ScheduleScreen()
-                AppDestinations.FAVORITES ->
-                    Text("Избранные группы", modifier =
-                        Modifier.padding(innerPadding))
-                AppDestinations.PROFILE ->
-                    Text("Профиль студента", modifier =
-                        Modifier.padding(innerPadding))
+                AppDestinations.FAVORITES -> FavoritesScreen()
             }
         }
     }
@@ -89,5 +84,4 @@ enum class AppDestinations(
 ) {
     HOME("Home", Icons.Default.Home),
     FAVORITES("Favorites", Icons.Default.Favorite),
-    PROFILE("Profile", Icons.Default.AccountBox),
 }

@@ -10,4 +10,7 @@ class ScheduleRepository(private val api: ScheduleApi) {
             end = "2026-01-17"
         )
     }
+    suspend fun loadGroups(): List<String> {
+        return api.getGroups()
+    }
 }
