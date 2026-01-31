@@ -8,10 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.collegeschedule.data.dto.ScheduleByDateDto
 import com.example.collegeschedule.data.network.RetrofitInstance
+import com.example.collegeschedule.data.store.FavoritesStore
 import com.example.collegeschedule.utils.getWeekDateRange
+import kotlinx.coroutines.launch
 
 @Composable
-fun ScheduleScreen() {
+fun ScheduleScreen(favoritesStore: FavoritesStore) {
+
     var groups by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedGroup by remember { mutableStateOf<String?>(null) }
     var searchQuery by remember { mutableStateOf("") }
@@ -20,6 +23,9 @@ fun ScheduleScreen() {
     var schedule by remember { mutableStateOf<List<ScheduleByDateDto>>(emptyList()) }
     var loading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
+
+    val favorites by favoritesStore.favoritesFlow.collectAsState(initial = emptySet())
+    val scope = rememberCoroutineScope()
 
     // Загружаем список групп
     LaunchedEffect(Unit) {
@@ -63,7 +69,29 @@ fun ScheduleScreen() {
             }
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(12.dp))
+
+        // ⭐ Кнопка избранного
+        if (selectedGroup != null) {
+            val isFavorite = favorites.contains(selectedGroup)
+
+            Button(
+                onClick = {
+                    scope.launch {
+                        if (isFavorite)
+                            favoritesStore.removeFavorite(selectedGroup!!)
+                        else
+                            favoritesStore.addFavorite(selectedGroup!!)
+                    }
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(if (isFavorite) "Удалить из избранного" else "Добавить в избранное")
+            }
+
+            Spacer(Modifier.height(12.dp))
+        }
+
 
         // Кнопка загрузки расписания
         Button(
@@ -73,7 +101,7 @@ fun ScheduleScreen() {
                     error = null
                     val (start, end) = getWeekDateRange()
 
-                    LaunchedEffect(selectedGroup) {
+                    scope.launch {
                         try {
                             schedule = RetrofitInstance.api.getSchedule(
                                 selectedGroup!!,
@@ -81,11 +109,12 @@ fun ScheduleScreen() {
                                 end
                             )
                         } catch (e: Exception) {
-                            error = "Ошибка загрузки расписания: ${e.message}"
+                            error = e.message
                         } finally {
                             loading = false
                         }
                     }
+
                 }
             },
             enabled = selectedGroup != null,
