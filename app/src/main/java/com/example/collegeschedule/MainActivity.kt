@@ -48,14 +48,7 @@ class MainActivity : ComponentActivity() {
 fun CollegeScheduleApp() {
     var currentDestination by rememberSaveable {
         mutableStateOf(AppDestinations.HOME) }
-    val retrofit = remember {
-        Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:5254/") // localhost для Android Emulator
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
-    val api = remember { retrofit.create(ScheduleApi::class.java) }
-    val repository = remember { ScheduleRepository(api) }
+    val repository = remember { ScheduleRepository() }
     val context = LocalContext.current
     val favoritesStore = remember { FavoritesStore(context) }
     NavigationSuiteScaffold(
@@ -77,8 +70,8 @@ fun CollegeScheduleApp() {
     ) {
         Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
             when (currentDestination) {
-                AppDestinations.HOME -> ScheduleScreen(favoritesStore)
-                AppDestinations.FAVORITES -> FavoritesScreen(favoritesStore)
+                AppDestinations.HOME -> ScheduleScreen(repository, favoritesStore)
+                AppDestinations.FAVORITES -> FavoritesScreen(repository, favoritesStore)
             }
         }
     }

@@ -11,12 +11,13 @@ import androidx.compose.ui.unit.dp
 import com.example.collegeschedule.data.store.FavoritesStore
 import com.example.collegeschedule.data.dto.ScheduleByDateDto
 import com.example.collegeschedule.data.network.RetrofitInstance
+import com.example.collegeschedule.data.repository.ScheduleRepository
 import com.example.collegeschedule.utils.getWeekDateRange
 import com.example.collegeschedule.ui.schedule.ScheduleList
 import kotlinx.coroutines.launch
 
 @Composable
-fun FavoritesScreen(favoritesStore: FavoritesStore) {
+fun FavoritesScreen(repository: ScheduleRepository, favoritesStore: FavoritesStore) {
 
     val favorites by favoritesStore.favoritesFlow.collectAsState(initial = emptySet())
 
@@ -46,7 +47,7 @@ fun FavoritesScreen(favoritesStore: FavoritesStore) {
 
                             scope.launch {
                                 try {
-                                    schedule = RetrofitInstance.api.getSchedule(
+                                    schedule = repository.loadSchedule(
                                         selectedGroup!!,
                                         start,
                                         end

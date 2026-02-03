@@ -1,5 +1,6 @@
 package com.example.collegeschedule.ui.schedule
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.*
@@ -8,12 +9,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.collegeschedule.data.dto.ScheduleByDateDto
 import com.example.collegeschedule.data.network.RetrofitInstance
+import com.example.collegeschedule.data.repository.ScheduleRepository
 import com.example.collegeschedule.data.store.FavoritesStore
+import com.example.collegeschedule.ui.components.GroupSelector
 import com.example.collegeschedule.utils.getWeekDateRange
 import kotlinx.coroutines.launch
 
 @Composable
-fun ScheduleScreen(favoritesStore: FavoritesStore) {
+fun ScheduleScreen(repository: ScheduleRepository, favoritesStore: FavoritesStore) {
 
     var groups by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedGroup by remember { mutableStateOf<String?>(null) }
@@ -30,7 +33,7 @@ fun ScheduleScreen(favoritesStore: FavoritesStore) {
     // Загружаем список групп
     LaunchedEffect(Unit) {
         try {
-            groups = RetrofitInstance.api.getGroups()
+            groups = repository.loadGroups()
         } catch (e: Exception) {
             error = "Ошибка загрузки групп: ${e.message}"
         }
@@ -39,35 +42,11 @@ fun ScheduleScreen(favoritesStore: FavoritesStore) {
     Column(Modifier.fillMaxSize().padding(12.dp)) {
 
         // Поле поиска + Dropdown
-        Box {
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = {
-                    searchQuery = it
-                    expanded = true
-                },
-                label = { Text("Выберите группу") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                groups
-                    .filter { it.contains(searchQuery, ignoreCase = true) }
-                    .forEach { group ->
-                        DropdownMenuItem(
-                            text = { Text(group) },
-                            onClick = {
-                                selectedGroup = group
-                                searchQuery = group
-                                expanded = false
-                            }
-                        )
-                    }
-            }
-        }
+        GroupSelector(
+            groups = groups,
+            selectedGroup = selectedGroup,
+            onGroupSelected = { selectedGroup = it }
+        )
 
         Spacer(Modifier.height(12.dp))
 
@@ -103,7 +82,7 @@ fun ScheduleScreen(favoritesStore: FavoritesStore) {
 
                     scope.launch {
                         try {
-                            schedule = RetrofitInstance.api.getSchedule(
+                            schedule = repository.loadSchedule(
                                 selectedGroup!!,
                                 start,
                                 end
