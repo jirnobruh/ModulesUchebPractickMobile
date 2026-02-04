@@ -19,15 +19,3 @@ class ScheduleRepository {
         }
     }
 }
-/*class ScheduleRepository(private val api: ScheduleApi) {
-    suspend fun loadSchedule(group: String): List<ScheduleByDateDto> {
-        return api.getSchedule(
-            groupName = group,
-            start = "2026-01-12",
-            end = "2026-01-17"
-        )
-    }
-    suspend fun loadGroups(): List<String> {
-        return api.getGroups()
-    }
-}*/
