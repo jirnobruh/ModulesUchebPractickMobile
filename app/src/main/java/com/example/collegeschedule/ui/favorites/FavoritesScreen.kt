@@ -1,9 +1,6 @@
 package com.example.collegeschedule.ui.favorites
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -11,6 +8,7 @@ import androidx.compose.ui.unit.dp
 import com.example.collegeschedule.data.store.FavoritesStore
 import com.example.collegeschedule.data.dto.ScheduleByDateDto
 import com.example.collegeschedule.data.repository.ScheduleRepository
+import com.example.collegeschedule.ui.components.GroupChip
 import com.example.collegeschedule.utils.getWeekDateRange
 import com.example.collegeschedule.ui.schedule.ScheduleList
 import kotlinx.coroutines.launch
@@ -33,34 +31,28 @@ fun FavoritesScreen(repository: ScheduleRepository, favoritesStore: FavoritesSto
 
         Spacer(Modifier.height(12.dp))
 
-        LazyColumn {
-            items(favorites.toList()) { group ->
-                Text(
-                    group,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            selectedGroup = group
-                            loading = true
-                            val (start, end) = getWeekDateRange()
+        FlowRow(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            favorites.forEach { group ->
+                GroupChip(
+                    group = group,
+                    selected = selectedGroup == group,
+                    onClick = {
+                        selectedGroup = group
+                        loading = true
+                        val (start, end) = getWeekDateRange()
 
-                            scope.launch {
-                                try {
-                                    schedule = repository.loadSchedule(
-                                        selectedGroup!!,
-                                        start,
-                                        end
-                                    )
-                                } catch (e: Exception) {
-                                    error = e.message
-                                } finally {
-                                    loading = false
-                                }
+                        scope.launch {
+                            try {
+                                schedule = repository.loadSchedule(group, start, end)
+                            } catch (e: Exception) {
+                                error = e.message
+                            } finally {
+                                loading = false
                             }
-
                         }
-                        .padding(12.dp),
-                    style = MaterialTheme.typography.bodyLarge
+                    }
                 )
             }
         }

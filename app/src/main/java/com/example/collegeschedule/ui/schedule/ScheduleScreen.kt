@@ -1,8 +1,10 @@
 package com.example.collegeschedule.ui.schedule
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -19,15 +21,13 @@ fun ScheduleScreen(repository: ScheduleRepository, favoritesStore: FavoritesStor
 
     var groups by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedGroup by remember { mutableStateOf<String?>(null) }
-
     var schedule by remember { mutableStateOf<List<ScheduleByDateDto>>(emptyList()) }
     var loading by remember { mutableStateOf(false) }
     var error by remember { mutableStateOf<String?>(null) }
-
     val favorites by favoritesStore.favoritesFlow.collectAsState(initial = emptySet())
     val scope = rememberCoroutineScope()
 
-    // Загружаем список групп
+    // Загрузка списока групп
     LaunchedEffect(Unit) {
         try {
             groups = repository.loadGroups()
@@ -51,7 +51,7 @@ fun ScheduleScreen(repository: ScheduleRepository, favoritesStore: FavoritesStor
         if (selectedGroup != null) {
             val isFavorite = favorites.contains(selectedGroup)
 
-            Button(
+            FilledTonalButton(
                 onClick = {
                     scope.launch {
                         if (isFavorite)
@@ -60,14 +60,24 @@ fun ScheduleScreen(repository: ScheduleRepository, favoritesStore: FavoritesStor
                             favoritesStore.addFavorite(selectedGroup!!)
                     }
                 },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp),
+                shape = RoundedCornerShape(14.dp)
             ) {
-                Text(if (isFavorite) "Удалить из избранного" else "Добавить в избранное")
+                Icon(
+                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = null
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    if (isFavorite) "Удалить из избранного" else "Добавить в избранное",
+                    style = MaterialTheme.typography.titleMedium
+                )
             }
 
             Spacer(Modifier.height(12.dp))
         }
-
 
         // Кнопка загрузки расписания
         Button(
@@ -93,10 +103,15 @@ fun ScheduleScreen(repository: ScheduleRepository, favoritesStore: FavoritesStor
 
                 }
             },
-            enabled = selectedGroup != null,
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+            shape = RoundedCornerShape(14.dp)
         ) {
-            Text("Показать расписание")
+            Text(
+                "Показать расписание",
+                style = MaterialTheme.typography.titleMedium
+            )
         }
 
         Spacer(Modifier.height(16.dp))
