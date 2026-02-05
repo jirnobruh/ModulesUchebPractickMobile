@@ -19,8 +19,6 @@ fun ScheduleScreen(repository: ScheduleRepository, favoritesStore: FavoritesStor
 
     var groups by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedGroup by remember { mutableStateOf<String?>(null) }
-    var searchQuery by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
 
     var schedule by remember { mutableStateOf<List<ScheduleByDateDto>>(emptyList()) }
     var loading by remember { mutableStateOf(false) }

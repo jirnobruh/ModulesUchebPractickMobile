@@ -47,11 +47,22 @@ fun ScheduleList(data: List<ScheduleByDateDto>) {
                 day.lessons.forEach { lesson ->
                     Card(
                         modifier = Modifier
-                            .padding(8.dp)
-                            .fillMaxWidth()
+                            .padding(vertical = 8.dp)
+                            .fillMaxWidth(),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                     ) {
-                        Column(Modifier.padding(8.dp)) {
-                            Text("Пара ${lesson.lessonNumber} (${lesson.time})")
+                        Column(Modifier.padding(12.dp)) {
+
+                            // Заголовок пары
+                            Text(
+                                text = "Пара ${lesson.lessonNumber}  •  ${lesson.time}",
+                                style = MaterialTheme.typography.titleMedium.copy(
+                                    fontWeight = FontWeight.Bold
+                                ),
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 8.dp)
+                            )
 
                             val full = lesson.groupParts[LessonGroupPart.FULL]
                             val sub1 = lesson.groupParts[LessonGroupPart.SUB1]
@@ -59,24 +70,49 @@ fun ScheduleList(data: List<ScheduleByDateDto>) {
 
                             if (full != null) {
                                 // Общая пара
-                                Text("${full.subject}")
-                                Text(full.teacher)
-                                Text("${full.building}, ${full.classroom}")
+                                LessonInfoBlock(
+                                    subject = full.subject,
+                                    teacher = full.teacher,
+                                    building = full.building,
+                                    classroom = full.classroom
+                                )
                             } else {
-                                // Таблица 1/2 подгруппы
+                                // Две подгруппы
                                 Row(Modifier.fillMaxWidth()) {
+
                                     Column(Modifier.weight(1f)) {
                                         if (sub1 != null) {
-                                            Text("1 подгр: ${sub1.subject}")
-                                            Text(sub1.teacher)
-                                            Text("${sub1.building}, ${sub1.classroom}")
+                                            Text(
+                                                "1 подгруппа",
+                                                style = MaterialTheme.typography.labelLarge.copy(
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                            )
+                                            LessonInfoBlock(
+                                                subject = sub1.subject,
+                                                teacher = sub1.teacher,
+                                                building = sub1.building,
+                                                classroom = sub1.classroom
+                                            )
                                         }
                                     }
+
+                                    Spacer(Modifier.width(12.dp))
+
                                     Column(Modifier.weight(1f)) {
                                         if (sub2 != null) {
-                                            Text("2 подгр: ${sub2.subject}")
-                                            Text(sub2.teacher)
-                                            Text("${sub2.building}, ${sub2.classroom}")
+                                            Text(
+                                                "2 подгруппа",
+                                                style = MaterialTheme.typography.labelLarge.copy(
+                                                    fontWeight = FontWeight.Bold
+                                                )
+                                            )
+                                            LessonInfoBlock(
+                                                subject = sub2.subject,
+                                                teacher = sub2.teacher,
+                                                building = sub2.building,
+                                                classroom = sub2.classroom
+                                            )
                                         }
                                     }
                                 }
@@ -86,5 +122,22 @@ fun ScheduleList(data: List<ScheduleByDateDto>) {
                 }
             }
         }
+    }
+}
+@Composable
+fun LessonInfoBlock(
+    subject: String,
+    teacher: String,
+    building: String,
+    classroom: String
+) {
+    Column(Modifier.padding(vertical = 4.dp)) {
+        Text(subject, style = MaterialTheme.typography.bodyLarge)
+        Text(teacher, style = MaterialTheme.typography.bodyMedium)
+        Text(
+            "$building, $classroom",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.primary
+        )
     }
 }
