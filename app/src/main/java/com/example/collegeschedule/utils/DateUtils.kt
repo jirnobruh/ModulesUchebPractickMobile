@@ -3,6 +3,8 @@ package com.example.collegeschedule.utils
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
+
 
 fun getWeekDateRange(): Pair<String, String> {
     val today = LocalDate.now()
@@ -22,4 +24,14 @@ fun getWeekDateRange(): Pair<String, String> {
         }
     }
     return start.format(formatter) to end.format(formatter)
+}
+
+fun formatScheduleDate(dateString: String, weekday: String): String {
+    val date = LocalDate.parse(dateString.substring(0, 10)) // "2026-02-05"
+    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+    val formattedDate = date.format(formatter)
+
+    val weekdayLower = weekday.lowercase(Locale("ru"))
+
+    return "$formattedDate – $weekdayLower"
 }

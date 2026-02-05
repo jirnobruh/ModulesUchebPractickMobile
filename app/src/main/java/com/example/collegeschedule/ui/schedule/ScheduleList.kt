@@ -9,13 +9,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.collegeschedule.data.dto.LessonGroupPart
 import com.example.collegeschedule.data.dto.ScheduleByDateDto
+import com.example.collegeschedule.utils.formatScheduleDate
 
 @Composable
 fun ScheduleList(data: List<ScheduleByDateDto>) {
     LazyColumn(Modifier.fillMaxSize()) {
         items(data) { day ->
+            val formattedDate = formatScheduleDate(day.lessonDate, day.weekday)
+
             Text(
-                "${day.lessonDate} (${day.weekday})",
+                formattedDate,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(8.dp)
             )
