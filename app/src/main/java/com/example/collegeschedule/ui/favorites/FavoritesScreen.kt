@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.collegeschedule.data.store.FavoritesStore
 import com.example.collegeschedule.data.dto.ScheduleByDateDto
-import com.example.collegeschedule.data.network.RetrofitInstance
 import com.example.collegeschedule.data.repository.ScheduleRepository
 import com.example.collegeschedule.utils.getWeekDateRange
 import com.example.collegeschedule.ui.schedule.ScheduleList

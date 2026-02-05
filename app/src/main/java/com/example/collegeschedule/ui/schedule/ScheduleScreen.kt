@@ -8,7 +8,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.collegeschedule.data.dto.ScheduleByDateDto
-import com.example.collegeschedule.data.network.RetrofitInstance
 import com.example.collegeschedule.data.repository.ScheduleRepository
 import com.example.collegeschedule.data.store.FavoritesStore
 import com.example.collegeschedule.ui.components.GroupSelector
@@ -50,7 +49,7 @@ fun ScheduleScreen(repository: ScheduleRepository, favoritesStore: FavoritesStor
 
         Spacer(Modifier.height(12.dp))
 
-        // ⭐ Кнопка избранного
+        // Кнопка избранного
         if (selectedGroup != null) {
             val isFavorite = favorites.contains(selectedGroup)
 
