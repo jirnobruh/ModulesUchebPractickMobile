@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -11,6 +12,8 @@ import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
@@ -46,40 +49,47 @@ class MainActivity : ComponentActivity() {
 @PreviewScreenSizes
 @Composable
 fun CollegeScheduleApp() {
-    var currentDestination by rememberSaveable {
-        mutableStateOf(AppDestinations.HOME) }
+    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
+
     val repository = remember { ScheduleRepository() }
     val context = LocalContext.current
     val favoritesStore = remember { FavoritesStore(context) }
-    NavigationSuiteScaffold(
-        navigationSuiteItems = {
-            AppDestinations.entries.forEach {
-                item(
-                    icon = {
-                        Icon(
-                            it.icon,
-                            contentDescription = it.label
-                        )
-                    },
-                    label = { Text(it.label) },
-                    selected = it == currentDestination,
-                    onClick = { currentDestination = it }
-                )
+
+    Scaffold(
+        bottomBar = {
+            NavigationBar {
+                AppDestinations.entries.forEach { destination ->
+                    NavigationBarItem(
+                        selected = currentDestination == destination,
+                        onClick = { currentDestination = destination },
+                        icon = {
+                            Icon(
+                                destination.icon,
+                                contentDescription = destination.label
+                            )
+                        },
+                        label = { Text(destination.label) }
+                    )
+                }
             }
         }
-    ) {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+    ) { innerPadding ->
+        Box(Modifier.padding(innerPadding)) {
             when (currentDestination) {
-                AppDestinations.HOME -> ScheduleScreen(repository, favoritesStore)
-                AppDestinations.FAVORITES -> FavoritesScreen(repository, favoritesStore)
+                AppDestinations.HOME ->
+                    ScheduleScreen(repository, favoritesStore)
+
+                AppDestinations.FAVORITES ->
+                    FavoritesScreen(repository, favoritesStore)
             }
         }
     }
 }
+
 enum class AppDestinations(
     val label: String,
-    val icon: ImageVector,
+    val icon: ImageVector
 ) {
-    HOME("Home", Icons.Default.Home),
-    FAVORITES("Favorites", Icons.Default.Favorite),
+    HOME("Все группы", Icons.Default.Home),
+    FAVORITES("Избранные", Icons.Default.Favorite)
 }
