@@ -23,8 +23,6 @@ fun ScheduleList(data: List<ScheduleByDateDto>) {
                     .fillMaxWidth()
                     .padding(vertical = 12.dp)
             ) {
-                Divider(thickness = 1.dp)
-
                 Text(
                     formattedDate,
                     style = MaterialTheme.typography.titleLarge.copy(
@@ -33,8 +31,6 @@ fun ScheduleList(data: List<ScheduleByDateDto>) {
                     modifier = Modifier
                         .padding(vertical = 8.dp)
                 )
-
-                Divider(thickness = 1.dp)
             }
 
 

@@ -1,6 +1,5 @@
 package com.example.collegeschedule.data.repository
 
-import com.example.collegeschedule.data.api.ScheduleApi
 import com.example.collegeschedule.data.dto.ScheduleByDateDto
 import com.example.collegeschedule.data.network.ApiProvider
 

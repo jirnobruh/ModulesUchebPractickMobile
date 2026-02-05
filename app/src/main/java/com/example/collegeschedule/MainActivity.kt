@@ -16,7 +16,6 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,14 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
-import com.example.collegeschedule.data.api.ScheduleApi
 import com.example.collegeschedule.data.repository.ScheduleRepository
 import com.example.collegeschedule.data.store.FavoritesStore
 import com.example.collegeschedule.ui.favorites.FavoritesScreen
 import com.example.collegeschedule.ui.schedule.ScheduleScreen
 import com.example.collegeschedule.ui.theme.CollegeScheduleTheme
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
